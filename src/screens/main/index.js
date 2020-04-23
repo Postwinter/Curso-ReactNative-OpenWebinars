@@ -11,6 +11,10 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
+    title: {
+      fontWeight: "bold",
+      fontSize: 20
+    }
 });
 
 
@@ -33,7 +37,7 @@ class MainScreen extends Component {
     //const {todos} = this.state;
     return(
         <View style={styles.container}>
-            <Text selectable>Lista de elementos</Text>
+            <Text selectable style={styles.title}>Lista de elementos</Text>
             <TodoList todos={this.state.todos}/>
         </View>
     );
