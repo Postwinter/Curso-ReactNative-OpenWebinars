@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
-import { Text, ScrollView, FlatList, TouchableOpacity, TouchableHighlight, View, StyleSheet, Alert } from 'react-native';
+import { Text, ScrollView, FlatList, SectionList, TouchableOpacity, TouchableHighlight, View, StyleSheet, Alert, Image } from 'react-native';
 import { render } from 'react-dom';
+import deleteImage from 'todoList/assets/delete.png'
 
 const styles = StyleSheet.create({
   container: {
@@ -61,39 +62,61 @@ const styles = StyleSheet.create({
   }
 });
 
-renderItem = todo => (
-    <TouchableOpacity style={styles.listItem} key={todo.id} onPress={() => onUpdate({ ...todo, done: !todo.done})}>
-        <Text style={styles.bullet}>-</Text>
-        <Text style={[styles.text, todo.done && styles.textDone]}>
-        {todo.text} 
-        </Text>
-        <TouchableHighlight style={styles.delete} onPress={() => onDelete(todo)}>
-            <Text style={styles.deleteText}>X</Text>
-        </TouchableHighlight>
-    </TouchableOpacity>
-);
 
+const TodoList = ({todos, onUpdate, onDelete}) => {
+    renderItem = todo => (
+        <TouchableOpacity style={styles.listItem} key={todo.id} onPress={() => onUpdate({ ...todo, done: !todo.done})}>
+            <Text style={styles.bullet}>-</Text>
+            <Text style={[styles.text, todo.done && styles.textDone]}>
+            {todo.text} 
+            </Text>
+            <TouchableHighlight style={styles.delete} onPress={() => onDelete(todo)}>
+                <Image source={deleteImage} style={styles.icon}/>
+            </TouchableHighlight>
+        </TouchableOpacity>
+    );
+    
+    
+    renderSeparator = () => {
+        return <View style={styles.separator} />;
+    };
+    
+    
+    renderEmptyComponent = () => (
+        <View style={styles.emptyList}>
+            <Image style={styles.emptyImage} source={require('todoList/assets/check.png')}/>
+            <Text>Lista Vacia</Text>
+        </View>
+    );
 
-renderSeparator = () => {
-    return <View style={styles.separator} />;
-};
-
-
-renderEmptyComponent = () => (
-    <View style={styles.emptyList}>
-      <Text>Lista Vacia</Text>
-    </View>
-);
-
-const TodoList = ({todos, onUpdate, onDelete}) => (
-    <FlatList
+    renderSectionHeader = ({ section: { title, data } }) => (
+        <View style={styles.sectionHeader}>
+          <Text>
+            {title} ({data.length})
+          </Text>
+        </View>
+    );
+    
+    return(
+        <SectionList
         style={styles.container}
-        data={todos}
+        sections={
+            todos && todos.length
+              ? [
+                    {title:'ToDo', data: todos.filter(todo=> !todo.done)},
+                    {title:'Terminadas', data: todos.filter(todo=> todo.done)}
+                ]
+              : []
+        }
         keyExtractor={todo => todo.id}
         renderItem={({ item }) => renderItem(item)}
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={renderEmptyComponent}
-    />
+        renderSectionHeader={renderSectionHeader}
+        stickySectionHeadersEnabled={true}
+        />
+    );
+    
     // <ScrollView contentContainerStyle={styles.container}>
     //     {todos.map( todo => (
     //         <TouchableOpacity style={styles.listItem} key={todo.text} onPress={() => onUpdate({ ...todo, done: !todo.done})}>
@@ -107,6 +130,7 @@ const TodoList = ({todos, onUpdate, onDelete}) => (
     //         </TouchableOpacity>
     //     ))}
     // </ScrollView>
-);
+};
+
 
 export default TodoList;
