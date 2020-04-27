@@ -1,20 +1,25 @@
 import uuid from "todoList/node_modules/react-native-uuid";
 
-const getTodos = () => [
-    newTodo({ text: "Elemento 1", done: false }), 
-    newTodo({ text: "Elemento 2", done: false }), 
-    newTodo({ text: "Elemento 3", done: false }),
-    newTodo({ text: "Elemento 4", done: true }),
-    newTodo({ text: "Elemento 5", done: false }),
-    newTodo({ text: "Elemento 6", done: false }),
-    newTodo({ text: "Elemento 7", done: false }),
-    newTodo({ text: "Elemento 8", done: false }),
-    newTodo({ text: "Elemento 9", done: false }),
-    newTodo({ text: "Elemento 10", done: false }),
-    newTodo({ text: "Elemento 11", done: false }),
-    newTodo({ text: "Elemento 12", done: false }),
-    newTodo({ text: "Elemento 13", done: false })
-];
+const delay = ms => new Promise(res => setTimeout(res,ms));
+
+const getTodos = async () => {
+  await delay(2000); //Aplicar espera de 2 segundos
+  return [
+    newTodo({ text: "Elemento 1", done: false, priority: 2 }), 
+    newTodo({ text: "Elemento 2", done: false, priority: 2 }), 
+    newTodo({ text: "Elemento 3", done: false, priority: 2 }),
+    newTodo({ text: "Elemento 4", done: true, priority: 2 }),
+    newTodo({ text: "Elemento 5", done: false, priority: 2 }),
+    newTodo({ text: "Elemento 6", done: false, priority: 2 }),
+    newTodo({ text: "Elemento 7", done: true, priority: 2 }),
+    newTodo({ text: "Elemento 8", done: false, priority: 2 }),
+    newTodo({ text: "Elemento 9", done: false, priority: 2 }),
+    newTodo({ text: "Elemento 10", done: false, priority: 2 }),
+    newTodo({ text: "Elemento 11", done: true, priority: 2 }),
+    newTodo({ text: "Elemento 12", done: false, priority: 2 }),
+    newTodo({ text: "Elemento 13", done: false, priority: 2 })
+  ]
+};
 
 //Crea uno nuevo
 const newTodo = todo => ({
@@ -22,7 +27,7 @@ const newTodo = todo => ({
   text: todo.text,
   createdAt: new Date(),
   done: todo.done,
-  //priority: todo.priority
+  priority: todo.priority
 });
 
 

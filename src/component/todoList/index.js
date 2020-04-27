@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
-import { Text, ScrollView, FlatList, SectionList, TouchableOpacity, TouchableHighlight, View, StyleSheet, Alert, Image } from 'react-native';
+import { Text, CheckBox, ScrollView, FlatList, SectionList, TouchableOpacity, TouchableHighlight, View, StyleSheet, Alert, Image } from 'react-native';
 import { render } from 'react-dom';
 import deleteImage from 'todoList/assets/delete.png'
+
 
 const styles = StyleSheet.create({
   container: {
@@ -66,7 +67,13 @@ const styles = StyleSheet.create({
 const TodoList = ({todos, onUpdate, onDelete}) => {
     renderItem = todo => (
         <TouchableOpacity style={styles.listItem} key={todo.id} onPress={() => onUpdate({ ...todo, done: !todo.done})}>
-            <Text style={styles.bullet}>-</Text>
+            <CheckBox
+              checkedCheckBoxColor="#aaa"
+              onClick={() => {
+                onUpdate({ ...todo, done: !todo.done });
+              }}
+              isChecked={todo.done}
+            />
             <Text style={[styles.text, todo.done && styles.textDone]}>
             {todo.text} 
             </Text>
@@ -96,18 +103,32 @@ const TodoList = ({todos, onUpdate, onDelete}) => {
           </Text>
         </View>
     );
+
+
+    getSectionData = () => {
+      if (todos && todos.length) {
+        return [
+          {
+            title: "ToDo",
+            data: todos
+              .filter(todo => !todo.done)
+              .sort((a, b) => (a.priority < b.priority ? -1 : 1))
+          },
+          {
+            title: "Terminadas",
+            data: todos
+              .filter(todo => todo.done)
+              .sort((a, b) => (a.priority < b.priority ? -1 : 1))
+          }
+        ];
+      }
+      return [];
+    };
     
     return(
         <SectionList
         style={styles.container}
-        sections={
-            todos && todos.length
-              ? [
-                    {title:'ToDo', data: todos.filter(todo=> !todo.done)},
-                    {title:'Terminadas', data: todos.filter(todo=> todo.done)}
-                ]
-              : []
-        }
+        sections={getSectionData()}
         keyExtractor={todo => todo.id}
         renderItem={({ item }) => renderItem(item)}
         ItemSeparatorComponent={renderSeparator}
@@ -116,20 +137,6 @@ const TodoList = ({todos, onUpdate, onDelete}) => {
         stickySectionHeadersEnabled={true}
         />
     );
-    
-    // <ScrollView contentContainerStyle={styles.container}>
-    //     {todos.map( todo => (
-    //         <TouchableOpacity style={styles.listItem} key={todo.text} onPress={() => onUpdate({ ...todo, done: !todo.done})}>
-    //             <Text style={styles.bullet}>-</Text>
-    //             <Text style={[styles.text, todo.done && styles.textDone]}>
-    //                 {todo.text} 
-    //             </Text>
-    //             <TouchableHighlight style={styles.delete} onPress={() => onDelete(todo)}>
-    //                 <Text style={styles.deleteText}>X</Text>
-    //             </TouchableHighlight>
-    //         </TouchableOpacity>
-    //     ))}
-    // </ScrollView>
 };
 
 
